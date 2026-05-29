@@ -23,26 +23,34 @@ The system was developed and tested on real ski-lift footage.
 
 ---
 
+
 ## Demo
 
 ### Default YOLOv8 vs Custom Trained YOLOv8s
 
 The demo below compares:
 
-1. default YOLOv8 person detection
-2. custom-trained YOLOv8s child/adult classification
+1. Default YOLOv8 person detection
+2. Custom-trained YOLOv8s child/adult classification
 
-<video controls width="900">
-  <source src="docs/demo.mp4" type="video/mp4">
-</video>
+<p align="center">
+  <img src="docs/demo.gif" width="700">
+</p>
+
+<p align="center">
+  <a href="docs/demo.mp4">View HD Version</a>
+</p>
 
 ---
 
 ## Full Output Example
 
-<video controls width="900">
-  <source src="docs/full_output.mp4" type="video/mp4">
-</video>
+The complete inference result is available below:
+
+<p align="center">
+  <a href="docs/full_output.mp4">View Full Output Video</a>
+</p>
+
 
 ---
 
