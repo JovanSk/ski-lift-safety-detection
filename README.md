@@ -34,11 +34,12 @@ The demo below compares:
 2. Custom-trained YOLOv8s child/adult classification
 
 <p align="center">
-  <img src="docs/demo.gif">
+  <a href="https://github.com/JovanSk/ski-lift-safety-detection/releases/download/v1.0/demo.mp4">
+    <img src="docs/demo.gif">
 </p>
 
 <p align="center">
-  <a href="docs/demo.mp4">View HD Version</a>
+  <a href="https://github.com/JovanSk/ski-lift-safety-detection/releases/download/v1.0/demo.mp4">View HD Version</a>
 </p>
 
 ---
