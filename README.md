@@ -34,7 +34,7 @@ The demo below compares:
 2. Custom-trained YOLOv8s child/adult classification
 
 <p align="center">
-  <img src="docs/demo.gif" width="850">
+  <img src="docs/demo.gif">
 </p>
 
 <p align="center">
