@@ -2,29 +2,17 @@
 
 Computer vision project for child/adult detection and ski lift safety monitoring using a custom-trained YOLOv8s model, temporal tracking, label stabilization, and alert-zone logic. The project includes custom dataset creation using CVAT, manual annotation of ski-lift footage collected from online cameras, and tracking-aware labeling with custom `child` and `adult` classes.
 
----
-
-## Overview
-
-This project demonstrates a complete computer vision pipeline built around:
-
-* YOLO dataset preparation
-* custom YOLOv8s training
-* child/adult classification
-* object tracking across frames
-* improved tracking stability during short detection interruptions
-* temporal classification stabilization
-* smart label placement and smoothing
-* alert-zone detection
-* alert persistence logic
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-green)
+![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-orange)
+![Tracking](https://img.shields.io/badge/Tracking-Custom-red)
+![CVAT](https://img.shields.io/badge/CVAT-Dataset%20Annotation-purple)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 
-The system was developed and tested on real ski-lift footage.
-
----
 
 
-## Demo
+## 🎬 Demo
 
 ### Default YOLOv8 vs Custom Trained YOLOv8s
 
@@ -48,13 +36,28 @@ The demo below compares:
 
 The complete inference result is available below:
 
-
-
-
 <p align="center">  
   <a href="https://github.com/JovanSk/ski-lift-safety-detection/releases/download/v1.0/full_output.mp4">View Full Output Video</a>
 </p>
 
+---
+
+## Overview
+
+This project demonstrates a complete computer vision pipeline built around:
+
+* YOLO dataset preparation
+* custom YOLOv8s training
+* child/adult classification
+* object tracking across frames
+* improved tracking stability during short detection interruptions
+* temporal classification stabilization
+* smart label placement and smoothing
+* alert-zone detection
+* alert persistence logic
+
+
+The system was developed and tested on real ski-lift footage.
 
 ---
 
