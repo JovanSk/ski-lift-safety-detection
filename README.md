@@ -258,6 +258,44 @@ especially in:
 - `yolo_dataset_filter.py`        prepares and filters YOLO image/label pairs for the final training dataset
 - `ski_lift_safety_detection.py`  main inference, tracking, stabilization and alerting pipeline
 
+
+## Usage
+
+### 1. Clone the repository
+
+
+git clone https://github.com/JovanSk/ski-lift-safety-detection.git
+cd ski-lift-safety-detection
+
+
+### 2. Install dependencies
+
+
+pip install -r requirements.txt
+
+### 3. Configure input and output paths
+
+Edit the paths in the main script if necessary:
+
+python
+INPUT_VIDEO = "videos/sample/sample_input.mp4"
+OUTPUT_VIDEO = "output/output.mp4"
+MODEL_PATH = "models/yolov8s_fine_tuned/best.pt"
+
+
+### 4. Run the detection pipeline
+
+python scripts/safety_monitor.py
+
+The processed video will be generated with:
+
+* adult/child classification
+* object tracking
+* temporal label stabilization
+* alert-zone monitoring
+* visual safety alerts
+
+
 ## Future Improvements
 
 Potential future directions:
@@ -274,3 +312,7 @@ Potential future directions:
 ## Author
 
 Developed as a computer vision and tracking engineering project focused on dataset creating, practical YOLO customization, tracking stability and safety-oriented scene logic.
+
+## License
+
+This project is released under the MIT License.
