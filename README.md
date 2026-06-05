@@ -48,8 +48,11 @@ The demo below compares:
 
 The complete inference result is available below:
 
-<p align="center">
-  <a href="docs/full_output.mp4">View Full Output Video</a>
+
+
+
+<p align="center">  
+  <a href="https://github.com/JovanSk/ski-lift-safety-detection/releases/download/v1.0/full_output.mp4">View Full Output Video</a>
 </p>
 
 
