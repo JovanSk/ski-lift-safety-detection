@@ -158,17 +158,21 @@ project_root/
 │            └── val
 ├── docs/
 │   ├── demo.mp4
+│   ├── demo.gif
 │   ├── full_output.mp4
 │   ├── confusion_matrix.png
 │   ├── training_results.csv
-│   └── training_results.png
-│
+│   ├── pipeline_dataset.png.png
+│   └── pipeline_inference.png.png
+│   
 ├── models/
 │   └── yolov8s_fine_tuned
 │       └── best.pt
 │
 ├── scripts/
-│   └── main.py
+│   └── safety_monitor.py
+│   └── extract_frames.py
+│   └── yolo_dataset_filter.py
 │
 ├── videos/
 │   └── sample_input.mp4
@@ -224,6 +228,12 @@ especially in:
 * Full dataset is not included in the repository due to size
 
 ---
+
+## Utility Scripts
+
+- `extract_frames.py`             extracts frames from source videos for annotation and dataset creation
+- `yolo_dataset_filter.py`        prepares and filters YOLO image/label pairs for the final training dataset
+- `ski_lift_safety_detection.py`  main inference, tracking, stabilization and alerting pipeline
 
 ## Future Improvements
 
