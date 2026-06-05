@@ -11,7 +11,6 @@ Computer vision project for child/adult detection and ski lift safety monitoring
 
 
 
-
 ## 🎬 Demo
 
 ### Default YOLOv8 vs Custom Trained YOLOv8s
@@ -60,6 +59,24 @@ This project demonstrates a complete computer vision pipeline built around:
 The system was developed and tested on real ski-lift footage.
 
 ---
+
+## Example Output
+
+Example frame from the processed video:
+
+![Example Output](docs/example.png)
+
+The screenshot shows the final inference pipeline in action.
+
+Features visible in the output:
+
+Custom YOLOv8s classification of adults and children
+Persistent object tracking with stable IDs
+Temporal label stabilization to reduce classification flickering
+Alert-zone monitoring for child safety detection (red highlighted area)
+Visual alert generation when a child enters the defined danger zone
+
+Example output showing child/adult classification, tracking, and alert-zone monitoring at a ski-lift loading station.
 
 
 ## Dataset Creation Pipeline
