@@ -230,7 +230,7 @@ Example training command:
 
 The custom-trained YOLOv8s model demonstrated:
 
-* possibilty of child/adult differentiation
+* a possibilty of child/adult differentiation
 * more stable detections
 * improved localization quality
 * improved visual tracking consistency
@@ -283,9 +283,8 @@ OUTPUT_VIDEO = "output/output.mp4"
 MODEL_PATH = "models/yolov8s_fine_tuned/best.pt"
 
 
+---
 ### 4. Run the detection pipeline
-
-
 
 
         python scripts/safety_monitor.py
@@ -299,6 +298,7 @@ The processed video will be generated with:
 * temporal label stabilization
 * alert-zone monitoring
 * visual safety alerts
+---
 
 
 ## Future Improvements
