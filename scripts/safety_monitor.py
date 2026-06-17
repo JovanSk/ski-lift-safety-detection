@@ -1,7 +1,9 @@
-from ultralytics import YOLO
 import cv2
 import os
 import numpy as np
+from ultralytics import YOLO
+from datetime import datetime, timedelta
+
 
 # =========================
 # PATH SETUP
@@ -10,7 +12,7 @@ import numpy as np
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MODEL_PATH = os.path.join(BASE_DIR, "models", "yolov8s_fine_tuned", "best.pt")
-VIDEO_PATH = os.path.join(BASE_DIR, "videos", "sample", "sample_input.mp4")
+VIDEO_PATH = os.path.join(BASE_DIR, "videos", "sample", "test.mp4")
 OUTPUT_PATH = os.path.join(BASE_DIR, "output", "output.mp4")
 
 # =========================
@@ -32,6 +34,7 @@ ZONE_QUAD = [
 ]
 
 FONT = cv2.FONT_HERSHEY_SIMPLEX
+
 
 COLOR_ADULT = (255, 200, 100)
 COLOR_CHILD = (0, 180, 0)
@@ -76,6 +79,147 @@ def is_overlapping(a, b):
     return not (a[2] < b[0] or b[2] < a[0] or a[3] < b[1] or b[3] < a[1])
 
 
+# rounded ALERT box
+def draw_rounded_rect(img, pt1, pt2, color, radius=10):
+
+    x1, y1 = pt1
+    x2, y2 = pt2
+
+    cv2.rectangle(img, (x1 + radius, y1), (x2 - radius, y2), color, -1)
+    cv2.rectangle(img, (x1, y1 + radius), (x2, y2 - radius), color, -1)
+
+    cv2.circle(img, (x1 + radius, y1 + radius), radius, color, -1)
+    cv2.circle(img, (x2 - radius, y1 + radius), radius, color, -1)
+    cv2.circle(img, (x1 + radius, y2 - radius), radius, color, -1)
+    cv2.circle(img, (x2 - radius, y2 - radius), radius, color, -1)
+
+
+def draw_rounded_label(frame, x1, y1, x2, y2, color):
+
+    overlay = frame.copy()
+
+    radius = 12
+
+    draw_rounded_rect(
+        overlay,
+        (x1, y1),
+        (x2, y2),
+        color,
+        radius
+    )
+
+    cv2.addWeighted(
+        overlay,
+        0.70,
+        frame,
+        0.30,
+        0,
+        frame
+    )
+
+
+    draw_rounded_border(
+        frame,
+        (x1, y1),
+        (x2, y2),
+        (220, 220, 220),
+        radius=12,
+        thickness=1
+    )
+
+
+def draw_rounded_border(img, pt1, pt2, color, radius=12, thickness=1):
+
+    x1, y1 = pt1
+    x2, y2 = pt2
+
+    # horizontal parts
+    cv2.line(
+        img,
+        (x1 + radius, y1),
+        (x2 - radius, y1),
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
+    cv2.line(
+        img,
+        (x1 + radius, y2),
+        (x2 - radius, y2),
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
+    # vertical parts
+    cv2.line(
+        img,
+        (x1, y1 + radius),
+        (x1, y2 - radius),
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
+    cv2.line(
+        img,
+        (x2, y1 + radius),
+        (x2, y2 - radius),
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
+    # corners
+    cv2.ellipse(
+        img,
+        (x1 + radius, y1 + radius),
+        (radius, radius),
+        180,
+        0,
+        90,
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
+    cv2.ellipse(
+        img,
+        (x2 - radius, y1 + radius),
+        (radius, radius),
+        270,
+        0,
+        90,
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
+    cv2.ellipse(
+        img,
+        (x2 - radius, y2 - radius),
+        (radius, radius),
+        0,
+        0,
+        90,
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
+    cv2.ellipse(
+        img,
+        (x1 + radius, y2 - radius),
+        (radius, radius),
+        90,
+        0,
+        90,
+        color,
+        thickness,
+        cv2.LINE_AA
+    )
+
 
 # ===============
 # DRAW DETECTION
@@ -96,7 +240,7 @@ def draw_detection(frame, box, label, center, det_id, placed_labels, alerted=Fal
         color = COLOR_ADULT
         text = "ADULT"
 
-    font_scale = 0.4
+    font_scale = 0.45
     thickness = 1
 
     
@@ -106,12 +250,19 @@ def draw_detection(frame, box, label, center, det_id, placed_labels, alerted=Fal
     #LABEL POSITIONING
 
     (tw, th), _ = cv2.getTextSize(text, FONT, font_scale, thickness)
-    padding = 6
 
-    
+    pad_x = 14
+    pad_y = 10
+
+    LABEL_GAP = 4
+
     # Initial candidate position for the label (on top of bbox)
-    base_x1, base_y1 = x1, y1 - th - padding                               # top-left corner of the label box
-    base_x2, base_y2 = base_x1 + tw + padding, y1                          # bottom-right corner of the label box
+    base_x1 = x1                                    # top-left corner of the label box
+    base_y1 = y1 - th - (2 * pad_y) - LABEL_GAP
+
+    base_x2 = base_x1 + tw + (2 * pad_x)            # bottom-right corner of the label box
+    base_y2 = y1 - LABEL_GAP
+
 
     candidate_positions = []
     for dy in [-5, -15, -25]:
@@ -176,6 +327,7 @@ def draw_detection(frame, box, label, center, det_id, placed_labels, alerted=Fal
     placed_labels.append(final_box)
 
     lx1, ly1, lx2, ly2 = final_box    # final label box coordinates
+    label_h = ly2 - ly1
     label_cx = (lx1 + lx2) // 2
     label_cy = (ly1 + ly2) // 2
 
@@ -186,10 +338,40 @@ def draw_detection(frame, box, label, center, det_id, placed_labels, alerted=Fal
     if not (lx2 >= x1 and lx1 <= x2 and ly2 >= y1 and ly1 <= y2):
         cv2.line(frame, (bbox_top_cx, bbox_top_cy), (label_cx, label_cy), color, 1)  # draw leader line (bbox - label)
 
-    cv2.rectangle(frame, (lx1, ly1), (lx2, ly2), color, -1)  # draw label background
-    cv2.putText(frame, text, (lx1 + 5, ly2 - 4), FONT, font_scale, (255, 255, 255), thickness)  # render label text
+    draw_rounded_label(frame, lx1, ly1, lx2, ly2, color)
 
+    
+    # label text with shadow effect
+    
+    label_h = ly2 - ly1
+    (tw, th), baseline = cv2.getTextSize(text,FONT,font_scale,1)
 
+    text_x = lx1 + 8    
+
+    text_y = ly1 + (label_h + th) // 2 + 2
+    text_pos = (text_x, text_y)
+
+    cv2.putText(
+        frame,
+        text,
+        text_pos,
+        FONT,
+        font_scale,
+        (50, 50, 50),
+        2,
+        cv2.LINE_AA
+    )
+
+    cv2.putText(
+        frame,
+        text,
+        text_pos,
+        FONT,
+        font_scale,
+        (255, 255, 255),
+        1,
+        cv2.LINE_AA
+    )
 
 
 # =========================
@@ -209,6 +391,8 @@ out = cv2.VideoWriter(
 )
 
 
+
+start_time = datetime(2026, 1, 15, 9, 30, 0)
 
 # =========================
 # MAIN LOOP
@@ -380,6 +564,36 @@ while True:
     cv2.addWeighted(overlay, 0.1, frame, 0.9, 0, frame)
     cv2.polylines(frame, [pts], True, (0, 0, 150), 1)
 
+    #Timestamp
+    timestamp_ms = cap.get(cv2.CAP_PROP_POS_MSEC)
+
+    current_time = start_time + timedelta(milliseconds=timestamp_ms)
+
+    timestamp_text = current_time.strftime("%d/%m/%Y %H:%M:%S")
+
+    cv2.putText(
+        frame,
+        timestamp_text,
+        (671, 671),
+        FONT,
+        0.45,
+        (0, 0, 0),
+        2
+    )
+
+    cv2.putText(
+        frame,
+        timestamp_text,
+        (670, 670),
+        FONT,
+        0.45,
+        (180, 180, 180),
+        1
+    )
+
+    
+
+
     placed_labels = []
     seen_ids = set()
 
@@ -417,15 +631,16 @@ while True:
 
             (tw, th), _ = cv2.getTextSize(text, FONT, font_scale, thickness)
 
-            x, y = 40, 120
-            padding = 12
-
-            cv2.rectangle(
+            x, y = 100, 220
+            padding = 20
+            
+            
+            draw_rounded_rect(
                 frame,
                 (x, y - th - padding),
-                (x + tw + padding, y + padding // 2),
+                (x + tw + padding, y + padding),
                 (0, 0, 200),
-                -1
+                radius=10
             )
 
             cv2.putText(frame, text, (x + 6, y + 2), FONT, font_scale, (0, 0, 0), thickness + 1)
